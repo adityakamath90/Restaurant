@@ -61,7 +61,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
                     .resize(150, 75).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher)
                     .into(holder.mRestaurantImage);
             holder.mDistanceAway.setText(mInflater.getContext().getString(R.string.location,
-                    String.valueOf(MathUtils.convertKmToMeter(MathUtils.distance
+                    String.valueOf(MathUtils.convertMeterToKm(MathUtils.distance
                             (mCurrentLatitude, mCurrentLongitude, Double
                             .valueOf(data.getLatitude()), Double.valueOf(data.getLongitude())))),
                     data
