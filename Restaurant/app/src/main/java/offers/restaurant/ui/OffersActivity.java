@@ -12,6 +12,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import offers.restaurant.R;
@@ -26,12 +28,9 @@ import retrofit2.Response;
 public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         .ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private RecyclerView mRetaurantList;
+    private RecyclerView mRestaurantList;
     private ProgressBar mProgressBar;
-
     private GoogleApiClient mGoogleApiClient;
-
-
     private double mCurrentLatitude;
     private double mCurrentLongitude;
 
@@ -41,12 +40,6 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_offfers);
         initView();
         initializeGoogleApiClient();
-        if (NetworkUtils.isAvailable(OffersActivity.this)) {
-            initiateRestaurantListingApi();
-        } else {
-            NetworkUtils.displayNetworkDialog(OffersActivity.this);
-        }
-
 
     }
 
@@ -67,7 +60,8 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
             public void onResponse(Response<Data> response) {
                 if (response != null && response.isSuccess()) {
                     List<RestaurantData> restaurantDataList = response.body().getData();
-                    mRetaurantList.setAdapter(new RestaurantAdapter(OffersActivity.this,
+                    sortRestaurantListBasedOnCurrentLocation(restaurantDataList);
+                    mRestaurantList.setAdapter(new RestaurantAdapter(OffersActivity.this,
                             restaurantDataList));
                 }
                 hideProgress();
@@ -80,6 +74,29 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         });
     }
 
+    private void sortRestaurantListBasedOnCurrentLocation(List<RestaurantData> restaurantDataList) {
+        Collections.sort(restaurantDataList, new Comparator<RestaurantData>() {
+            @Override
+            public int compare(RestaurantData o1, RestaurantData o2) {
+                float[] result1 = new float[3];
+                Location.distanceBetween(mCurrentLatitude,
+                        mCurrentLongitude, Double.valueOf(o1
+                                .getLatitude()), Double.valueOf(o1.getLongitude()),
+                        result1);
+                Float distance1 = result1[0];
+
+                float[] result2 = new float[3];
+                Location.distanceBetween(mCurrentLatitude,
+                        mCurrentLongitude, Double.valueOf(o2
+                                .getLatitude()), Double.valueOf(o2.getLongitude()),
+                        result2);
+                Float distance2 = result2[0];
+
+                return distance1.compareTo(distance2);
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         mGoogleApiClient.connect();
@@ -88,8 +105,8 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
 
 
     private void initView() {
-        mRetaurantList = (RecyclerView) findViewById(R.id.restaurant_list);
-        mRetaurantList.setLayoutManager(new LinearLayoutManager(OffersActivity.this));
+        mRestaurantList = (RecyclerView) findViewById(R.id.restaurant_list);
+        mRestaurantList.setLayoutManager(new LinearLayoutManager(OffersActivity.this));
         mProgressBar = (ProgressBar) findViewById(R.id.progress);
     }
 
@@ -100,6 +117,11 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         if (location != null) {
             mCurrentLatitude = location.getLatitude();
             mCurrentLongitude = location.getLongitude();
+        }
+        if (NetworkUtils.isAvailable(OffersActivity.this)) {
+            initiateRestaurantListingApi();
+        } else {
+            NetworkUtils.displayNetworkDialog(OffersActivity.this);
         }
     }
 
@@ -125,9 +147,4 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
-//    @Override
-//    public void onBackPressed() {
-//        //Put activity in backstack to prevent onCreate calling again for the time being.
-//        //moveTaskToBack(true);
-//    }
 }
