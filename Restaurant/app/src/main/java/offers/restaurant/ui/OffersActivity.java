@@ -40,7 +40,6 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_offfers);
         initView();
         initializeGoogleApiClient();
-
     }
 
     private void initializeGoogleApiClient() {
@@ -62,7 +61,7 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
                     List<RestaurantData> restaurantDataList = response.body().getData();
                     sortRestaurantListBasedOnCurrentLocation(restaurantDataList);
                     mRestaurantList.setAdapter(new RestaurantAdapter(OffersActivity.this,
-                            restaurantDataList));
+                            restaurantDataList, mCurrentLatitude, mCurrentLongitude));
                 }
                 hideProgress();
             }

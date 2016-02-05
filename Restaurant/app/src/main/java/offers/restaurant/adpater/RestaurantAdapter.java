@@ -14,27 +14,35 @@ import java.util.List;
 
 import offers.restaurant.R;
 import offers.restaurant.dto.RestaurantData;
+import offers.restaurant.utilities.MathUtils;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> {
 
     private List<RestaurantData> mRestaurantDataList;
     private LayoutInflater mInflater;
+    private double mCurrentLatitude;
+    private double mCurrentLongitude;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mRestaurantImage;
         private TextView mRestaurantName;
+        private TextView mDistanceAway;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mRestaurantImage = (ImageView) itemView.findViewById(R.id.restaurant_thumbnail);
             mRestaurantName = (TextView) itemView.findViewById(R.id.restaurant_name);
+            mDistanceAway = (TextView) itemView.findViewById(R.id.distance_away);
         }
     }
 
-    public RestaurantAdapter(Context context, List<RestaurantData> restaurantData) {
+    public RestaurantAdapter(Context context, List<RestaurantData> restaurantData, double
+            currentLatitude, double currentLongitude) {
         mRestaurantDataList = restaurantData;
         mInflater = LayoutInflater.from(context);
+        mCurrentLatitude = currentLatitude;
+        mCurrentLongitude = currentLongitude;
     }
 
     @Override
@@ -49,10 +57,15 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
         RestaurantData data = mRestaurantDataList.get(position);
         if (data != null) {
             holder.mRestaurantName.setText(data.getBrandName());
-            Picasso.with(mInflater.getContext()).load(data.getLogoURL()).resize(75, 75).centerCrop()
-                    .placeholder(R
-                            .mipmap
-                            .ic_launcher).error(R.mipmap.ic_launcher).into(holder.mRestaurantImage);
+            Picasso.with(mInflater.getContext()).load(data.getLogoURL())
+                    .resize(150, 75).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher)
+                    .into(holder.mRestaurantImage);
+            holder.mDistanceAway.setText(mInflater.getContext().getString(R.string.location,
+                    String.valueOf(MathUtils.convertKmToMeter(MathUtils.distance
+                            (mCurrentLatitude, mCurrentLongitude, Double
+                            .valueOf(data.getLatitude()), Double.valueOf(data.getLongitude())))),
+                    data
+                            .getNeighbourhoodName()));
         }
     }
 
