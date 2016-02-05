@@ -98,8 +98,8 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onStart() {
-        mGoogleApiClient.connect();
         super.onStart();
+        mGoogleApiClient.connect();
     }
 
 
@@ -126,8 +126,8 @@ public class OffersActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onStop() {
-        mGoogleApiClient.disconnect();
         super.onStop();
+        mGoogleApiClient.disconnect();
     }
 
     @Override
