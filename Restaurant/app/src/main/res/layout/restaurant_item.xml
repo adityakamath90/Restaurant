@@ -18,38 +18,38 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/restaurant_thumbnail"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                />
-
-            <TextView
-                android:id="@+id/distance.away"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/restaurant_thumbnail"
-                android:layout_marginTop="@dimen/margin"
-                android:drawableLeft="@mipmap/pin"
-                android:gravity="center_vertical"
-                />
-
             <RelativeLayout
-                android:layout_marginTop="@dimen/margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/restaurant_thumbnail"
-                >
+                android:id="@+id/thumbnailParent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/restaurant_thumbnail"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    />
 
                 <TextView
                     android:id="@+id/restaurant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"/>
-
+                    android:layout_marginLeft="@dimen/margin"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/restaurant_thumbnail"
+                    android:singleLine="true"
+                    />
 
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/distance.away"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/thumbnailParent"
+                android:layout_marginTop="@dimen/margin"
+                android:drawableLeft="@mipmap/pin"
+                android:gravity="center_vertical"
+                />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
